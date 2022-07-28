@@ -2,7 +2,7 @@ terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = "0.3.4"
+      version = "0.4.3"
     }
   }
 }
@@ -82,7 +82,7 @@ variable "dotfiles_uri" {
   default = ""
 }
 
-resource "coder_agent" "dev" {
+resource "coder_agent" "main" {
   arch = "amd64"
   auth = "aws-instance-identity"
   os   = "linux"
@@ -125,7 +125,7 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-sudo -u ${local.linux_user} sh -c '${coder_agent.dev.init_script}'
+sudo -u ${local.linux_user} sh -c '${coder_agent.main.init_script}'
 --//--
 EOT
 
@@ -159,7 +159,7 @@ EOT
 
 }
 
-resource "aws_instance" "dev" {
+resource "aws_instance" "workspace" {
   ami               = data.aws_ami.ubuntu.id
   availability_zone = "${var.region}a"
   instance_type     = "${var.instance}"
